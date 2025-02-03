@@ -2,31 +2,32 @@ import { ChangeDetectorRef, Component, computed, DestroyRef, effect, inject, inp
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import {
-  IonImg, IonAvatar, IonCardSubtitle, IonCardHeader, IonContent,
+  IonContent,
   IonHeader, IonTitle, IonToolbar, IonRefresher, IonRefresherContent, IonCard,
-  IonButton, IonIcon, IonCardContent, IonCardTitle
+  IonButton, IonCol, IonGrid, IonRow, IonSearchbar
 } from '@ionic/angular/standalone';
 import { EventsService } from '../services/events.service';
 import { MyEvent } from 'src/app/shared/interfaces/my-event';
-import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { debounceTime, Subject } from 'rxjs';
-import { IntlCurrencyPipe } from 'src/app/shared/pipes/intl-currency.pipe';
-import Swal from 'sweetalert2';
-import { RouterLink } from '@angular/router';
+import { EventCardComponent } from '../event-card/event-card.component';
+
+
+
 
 @Component({
   selector: 'app-home',
   templateUrl: './home.page.html',
   styleUrls: ['./home.page.scss'],
   standalone: true,
-  imports: [IonCardTitle, RouterLink, IonImg, IonAvatar, IonCardSubtitle, IonCardHeader,
-    IonCardContent, IntlCurrencyPipe, IonIcon, IonButton, IonContent, IonHeader, IonTitle,
-    IonToolbar, CommonModule, FormsModule, IonRefresher, IonRefresherContent, IonCard]
+  imports: [IonSearchbar, IonCol, IonButton, IonContent, IonHeader, IonTitle,
+    IonToolbar, CommonModule, FormsModule, IonRefresher, IonRefresherContent,
+    IonGrid, IonRow, EventCardComponent]
 })
 export class HomePage {
 
   events = signal<MyEvent[]>([]);
-  event = input.required<MyEvent>();
+
   attend = output<void>();
   #eventsService = inject(EventsService);
   search = signal('');
@@ -62,23 +63,7 @@ export class HomePage {
     });
   }
 
-  toggleAttend() {
-    const isAttending = this.event().attend;
 
-    const service = isAttending
-      ? this.#eventsService.deleteAttend(this.event().id)
-      : this.#eventsService.postAttend(this.event().id);
-
-    service
-      .pipe(takeUntilDestroyed(this.#destroyRef))
-      .subscribe(() => {
-        this.attend.emit();
-        this.event().numAttend += isAttending ? -1 : 1;
-        this.event().attend = !isAttending;
-        this.#changeDetectorRef.markForCheck();
-      });
-
-  }
 
 
   filteredEvents = computed(() => {
@@ -108,46 +93,40 @@ export class HomePage {
     });
   }
 
+  handleInput(event: Event) {
+    const target = event.target as HTMLIonSearchbarElement;
+    const query = target.value?.toLowerCase() || '';
+
+    if (query === '') {
+      this.loadEvents();
+    } else {
+      this.events.update((currentEvents) =>
+        currentEvents.filter(
+          (d) =>
+            d.title.toLowerCase().includes(query) ||
+            d.description.toLowerCase().includes(query)
+        )
+      );
+    }
+    this.#changeDetectorRef.markForCheck();
+  }
+
   loadEvents() {
     this.#eventsService
       .getEvents(this.page(), this.searchDebounced(), this.orderBy())
       .subscribe((newEvents) => {
-        this.events.update((current) => [...current, ...newEvents]);
+        this.events.set(newEvents);
+        this.#changeDetectorRef.markForCheck();
       });
   }
 
-  // The following function is necesary, as the url of the server is https and
-  // the url of the image is http, the browser detects it as malicious and wouldnt load it (or something like that)
-  getImageUrl(image: string | undefined): string {
-    if (image) {
-      if (image.startsWith('http://')) {
-        return 'https://' + image.slice(7); // Change to https://
-      }
-      return image;
-    }
-    return 'assets/images/default-avatar.jpg';
+  deleteEvent(event: MyEvent) {
+    this.events.update((events) => events.filter((e) => e !== event));
+
   }
 
-  deleteEvent() {
-    Swal.fire({
-      title: 'Are you sure?',
-      text: 'This action cannot be undone!',
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonColor: '#d33',
-      cancelButtonColor: '#3085d6',
-      confirmButtonText: 'Yes, delete it!'
-    }).then((result) => {
-      if (result.isConfirmed) {
-        this.#eventsService
-          .deleteEvent(this.event().id!)
-          .pipe(takeUntilDestroyed(this.#destroyRef))
-          .subscribe(() => {
-            this.deleted.emit();
-            Swal.fire('Deleted!', 'The event has been deleted.', 'success');
-          });
-      }
-    });
-  }
+
+
+
 
 }

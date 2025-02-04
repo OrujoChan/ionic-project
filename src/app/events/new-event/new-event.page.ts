@@ -85,7 +85,7 @@ export class NewEventPage {
     this.event.address = result.address;
     this.event.lat = result.coordinates[0];
     this.event.lng = result.coordinates[1];
-
+    this.coords.set([this.event.lat, this.event.lng]); // For updating the map
   }
 
   async pickFromGallery() {

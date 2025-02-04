@@ -7,13 +7,17 @@ import { Router, RouterLink } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Geolocation } from '@capacitor/geolocation';
 import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
+import { OlMapDirective } from 'src/app/shared/directives/ol-maps/ol-map.directive';
+import { OlMarkerDirective } from 'src/app/shared/directives/ol-maps/ol-marker.directive';
+import { GaAutocompleteDirective } from 'src/app/shared/directives/ol-maps/ga-autocomplete.directive';
+import { SearchResult } from 'src/app/shared/directives/ol-maps/search-result';
 
 @Component({
   selector: 'app-new-event',
   templateUrl: './new-event.page.html',
   styleUrls: ['./new-event.page.scss'],
   standalone: true,
-  imports: [IonHeader, ReactiveFormsModule, IonButton, IonList, IonContent, IonItem, IonTextarea, IonLabel, IonIcon, IonCol, IonGrid, IonInput, IonImg, IonToolbar, IonTitle, RouterLink, IonRow, FormsModule]
+  imports: [IonHeader, GaAutocompleteDirective, OlMapDirective, OlMarkerDirective, ReactiveFormsModule, IonButton, IonList, IonContent, IonItem, IonTextarea, IonLabel, IonIcon, IonCol, IonGrid, IonInput, IonImg, IonToolbar, IonTitle, RouterLink, IonRow, FormsModule]
 })
 export class NewEventPage {
 
@@ -60,19 +64,10 @@ export class NewEventPage {
     this.coords.set([coordinates.coords.longitude, coordinates.coords.latitude])
   }
 
-  onFileSelected(event: Event) {
-    const input = event.target as HTMLInputElement;
-    if (input.files && input.files.length > 0) {
-      const file = input.files[0];
-
-      // Optionally process the file here (e.g., convert to base64, upload, etc.)
-      console.log('File selected:', file.name);
-    }
-  }
 
   addEvent() {
     this.#eventsService
-      .addEvent({ ...this.event, image: this.imageBase64 })
+      .addEvent({ ...this.event })
       .pipe(takeUntilDestroyed(this.#destroyRef))
       .subscribe(async () => {
         (await this.#toastCtrl.create({
@@ -83,6 +78,14 @@ export class NewEventPage {
         this.saved = true;
         this.#router.navigate(['/events']);
       });
+  }
+
+  changePlace(result: SearchResult) {
+
+    this.event.address = result.address;
+    this.event.lat = result.coordinates[0];
+    this.event.lng = result.coordinates[1];
+
   }
 
   async pickFromGallery() {

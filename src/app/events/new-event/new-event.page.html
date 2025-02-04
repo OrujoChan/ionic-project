@@ -68,6 +68,9 @@
       </ion-row>
     </ion-grid>
   </form>
-
-
-</ion-content>
+  @if(coords()) {
+  <ol-map [coordinates]="coords()">
+    <ga-autocomplete (locationChange)="changePlace($event)"></ga-autocomplete>
+    <ol-marker [coordinates]="coords()"></ol-marker>
+  </ol-map>
+  }

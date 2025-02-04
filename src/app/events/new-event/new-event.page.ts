@@ -1,6 +1,6 @@
 import { ChangeDetectorRef, Component, DestroyRef, inject, output, signal } from '@angular/core';
-import { FormsModule } from '@angular/forms';
-import { IonContent, IonLabel, IonItem, IonList, IonButton, IonIcon, IonCol, IonGrid, IonImg, IonHeader, IonToolbar, IonTitle, IonRow } from '@ionic/angular/standalone';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { IonContent, ToastController, IonLabel, IonItem, IonList, IonButton, IonIcon, IonCol, IonGrid, IonImg, IonTextarea, IonHeader, IonToolbar, IonTitle, IonRow, IonInput } from '@ionic/angular/standalone';
 import { MyEventInsert } from 'src/app/shared/interfaces/my-event';
 import { EventsService } from '../services/events.service';
 import { Router, RouterLink } from '@angular/router';
@@ -13,7 +13,7 @@ import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
   templateUrl: './new-event.page.html',
   styleUrls: ['./new-event.page.scss'],
   standalone: true,
-  imports: [IonHeader, IonButton, IonList, IonContent, IonItem, IonLabel, IonIcon, IonCol, IonGrid, IonImg, IonToolbar, IonTitle, RouterLink, IonRow, FormsModule]
+  imports: [IonHeader, ReactiveFormsModule, IonButton, IonList, IonContent, IonItem, IonTextarea, IonLabel, IonIcon, IonCol, IonGrid, IonInput, IonImg, IonToolbar, IonTitle, RouterLink, IonRow, FormsModule]
 })
 export class NewEventPage {
 
@@ -22,7 +22,7 @@ export class NewEventPage {
   #destroyRef = inject(DestroyRef);
   #router = inject(Router);
   today = new Date().toISOString().slice(0, 10);
-
+  #toastCtrl = inject(ToastController)
   coords = signal<[number, number]>([-0.5, 38.5]);
 
   event: MyEventInsert = {
@@ -74,7 +74,12 @@ export class NewEventPage {
     this.#eventsService
       .addEvent({ ...this.event, image: this.imageBase64 })
       .pipe(takeUntilDestroyed(this.#destroyRef))
-      .subscribe(() => {
+      .subscribe(async () => {
+        (await this.#toastCtrl.create({
+          duration: 3000,
+          position: 'bottom',
+          message: 'User registered!'
+        })).present();
         this.saved = true;
         this.#router.navigate(['/events']);
       });
@@ -85,7 +90,7 @@ export class NewEventPage {
       source: CameraSource.Photos,
       resultType: CameraResultType.DataUrl // Base64 (url encoded)
     });
-    this.imageBase64 = photo.dataUrl as string;
+    this.event.image = photo.dataUrl as string;
     this.#changeDetectorRef.markForCheck();
   }
 

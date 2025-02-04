@@ -1,0 +1,62 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Profile</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  @if (user()) {
+  <div class="ion-text-center">
+    <ion-avatar>
+      <img [src]="avatar()" alt="Profile Picture">
+    </ion-avatar>
+    <ion-button color="danger" expand="block">
+      <ion-icon name="image"></ion-icon>
+      Change Avatar
+      <input type="file" hidden (change)="changeAvatar($event)" />
+    </ion-button>
+  </div>
+
+  @if (showInfo()) {
+  <ion-list>
+    <ion-item>
+      <ion-label>Name</ion-label>
+      <ion-text>{{ user()?.name }}</ion-text>
+    </ion-item>
+    <ion-item>
+      <ion-label>Email</ion-label>
+      <ion-text>{{ user()?.email }}</ion-text>
+    </ion-item>
+  </ion-list>
+
+  <ion-button expand="block" color="primary" (click)="editProfile()">Edit Profile</ion-button>
+  <ion-button expand="block" color="success" (click)="editPassword()">Edit Password</ion-button>
+  }
+
+  @if (ProfileForm()) {
+  <form (ngSubmit)="changeProfile()">
+    <ion-item>
+      <ion-input [(ngModel)]="email" name="email" label="Email" labelPlacement="floating" type="email" required
+        #emailModel="ngModel"></ion-input>
+      @if (emailModel.dirty && emailModel.valid) {
+      <ion-icon name="checkmark-circle" slot="end" color="success"></ion-icon>
+      }
+    </ion-item>
+
+    <ion-item>
+      <ion-input [(ngModel)]="name" name="name" label="Name" labelPlacement="floating" required
+        #nameModel="ngModel"></ion-input>
+      @if (nameModel.dirty && nameModel.valid) {
+      <ion-icon name="checkmark-circle" slot="end" color="success"></ion-icon>
+      }
+      @if (nameModel.invalid && nameModel.dirty) {
+      <ion-note color="danger">Name is required</ion-note>
+      }
+    </ion-item>
+
+    <ion-button type="submit" expand="block">Save Changes</ion-button>
+    <ion-button color="danger" expand="block" (click)="cancelEdit()">Cancel</ion-button>
+  </form>
+  }
+  }
+</ion-content>

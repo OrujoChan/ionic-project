@@ -8,14 +8,14 @@
           <ion-img [src]="user()!.avatar"></ion-img>
         </ion-avatar>
         <ion-label>
-          <h3>{{user()!.name}}</h3>
+          <h3><a href="user/me">{{user()!.name}}</a></h3>
           <p>{{user()!.email}}</p>
         </ion-label>
       </ion-item>
       }
       <ion-content>
         <ion-list id="inbox-list">
-
+          @if(user()) {
           @for (p of appPages; track p; let i = $index) {
           <ion-menu-toggle auto-hide="false">
             <ion-item routerDirection="root" [routerLink]="[p.url]" lines="none" detail="false"
@@ -25,6 +25,14 @@
             </ion-item>
           </ion-menu-toggle>
           }
+          <ion-menu-toggle auto-hide="false">
+            <ion-item (click)="logout()" lines="none" detail="false" button="true" style="cursor: pointer;">
+              <ion-icon slot="start" name="exit"></ion-icon>
+              <ion-label>Logout</ion-label>
+            </ion-item>
+          </ion-menu-toggle>
+          }
+
         </ion-list>
       </ion-content>
     </ion-menu>

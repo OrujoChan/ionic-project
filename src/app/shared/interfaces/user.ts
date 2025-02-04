@@ -15,3 +15,16 @@ export interface UserLogin {
     lat?: number;
     lng?: number;
 }
+
+export interface changePassword {
+    password: string;
+}
+
+export interface changeProfile {
+    name: string;
+    email: string;
+}
+
+export interface changeAvatar {
+    avatar: string;
+}

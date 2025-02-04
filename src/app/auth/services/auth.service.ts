@@ -76,7 +76,7 @@ export class AuthService {
   }
 
 
-  getProfile(id?: number): Observable<User> {
+  getUser(id?: number): Observable<User> {
     return this.#http
       .get<SingleUserResponse>(id ? `users/${id}` : "users/me")
       .pipe(map((resp: SingleUserResponse) => resp.user));

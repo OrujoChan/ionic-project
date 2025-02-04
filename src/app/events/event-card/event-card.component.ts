@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, DestroyRef, inject, input, output } from '@angular/core';
+import { ChangeDetectorRef, Component, DestroyRef, inject, input, output, signal } from '@angular/core';
 import { MyEvent } from 'src/app/shared/interfaces/my-event';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -18,6 +18,7 @@ import { EventsService } from '../services/events.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import Swal from 'sweetalert2';
 import { IntlCurrencyPipe } from "../../shared/pipes/intl-currency.pipe";
+import { User } from 'src/app/shared/interfaces/user';
 @Component({
   selector: 'app-event-card',
   imports: [
@@ -33,7 +34,8 @@ import { IntlCurrencyPipe } from "../../shared/pipes/intl-currency.pipe";
     IonAvatar,
     IonButton,
     IonIcon,
-    IntlCurrencyPipe
+    IntlCurrencyPipe,
+
   ],
   templateUrl: './event-card.component.html',
   styleUrls: ['./event-card.component.scss'],
@@ -42,26 +44,33 @@ export class EventCardComponent {
   event = input.required<MyEvent>();
   #eventsService = inject(EventsService);
   #destroyRef = inject(DestroyRef);
-  attend = output<void>();
+  attend = signal<User[]>([]);
   deleted = output<void>();
   #changeDetectorRef = inject(ChangeDetectorRef);
 
+  setAttend(id: number) {
+    this.#eventsService.getAttendees(id).pipe().subscribe((result) => {
+      this.attend.set(result.users);
+    });
+  }
+
   toggleAttend() {
-    const isAttending = this.event().attend;
+    const event = this.event();
+    if (!event) return;
 
+    const isAttending = event.attend;
     const service = isAttending
-      ? this.#eventsService.deleteAttend(this.event().id)
-      : this.#eventsService.postAttend(this.event().id);
+      ? this.#eventsService.deleteAttend(event.id)
+      : this.#eventsService.postAttend(event.id);
 
-    service
-      .pipe(takeUntilDestroyed(this.#destroyRef))
-      .subscribe(() => {
-        this.attend.emit();
-        this.event().numAttend += isAttending ? -1 : 1;
-        this.event().attend = !isAttending;
-        this.#changeDetectorRef.markForCheck();
-      });
+    service.pipe(takeUntilDestroyed(this.#destroyRef)).subscribe(() => {
+      event.numAttend += isAttending ? -1 : 1;
+      event.attend = !isAttending;
 
+      this.setAttend(event.id);
+
+      this.#changeDetectorRef.markForCheck();
+    });
   }
 
   deleteEvent() {

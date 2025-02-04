@@ -90,6 +90,9 @@ export class NewEventPage {
 
   async pickFromGallery() {
     const photo = await Camera.getPhoto({
+      width: 1024,
+      height: 768,
+      allowEditing: true,
       source: CameraSource.Photos,
       resultType: CameraResultType.DataUrl // Base64 (url encoded)
     });

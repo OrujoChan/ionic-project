@@ -1,0 +1,19 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+  </ion-toolbar>
+  <ion-toolbar>
+    <ion-title>{{ event()?.address || 'Address not available' }}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ol-map [coordinates]="[event()!.lng, event()!.lat]">
+    <ol-marker [coordinates]="[event()!.lng, event()!.lat]"></ol-marker>
+  </ol-map>
+
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button color="primary" (click)="openNavigation()">
+      <ion-icon name="navigate-outline"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+</ion-content>

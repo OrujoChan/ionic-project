@@ -1,0 +1,38 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button color="primary" (click)="toggleAttend()">
+      <ion-icon [name]="event()!.attend ? 'thumbs-up' : 'thumbs-down'"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+  <ion-card>
+    <ion-card-header color="danger">
+      <ion-card-title>Attendees to the Event</ion-card-title>
+    </ion-card-header>
+    <ion-list>
+      @if (attend().length === 0) {
+      <ion-item>
+        <ion-label>No attendees yet</ion-label>
+      </ion-item>
+      } @else {
+      @for (user of attend(); track user.id) {
+      <ion-item>
+        <ion-avatar slot="start">
+          <img [src]="user.avatar" alt="avatar" />
+        </ion-avatar>
+        <ion-label>
+          <h2>
+            <a [routerLink]="['/profile', user.id]">{{ user.name }}</a>
+          </h2>
+          <p>{{ user.email }}</p>
+        </ion-label>
+      </ion-item>
+      }
+      }
+    </ion-list>
+  </ion-card>
+</ion-content>

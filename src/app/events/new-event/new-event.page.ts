@@ -73,7 +73,7 @@ export class NewEventPage {
         (await this.#toastCtrl.create({
           duration: 3000,
           position: 'bottom',
-          message: 'User registered!'
+          message: 'Event registered!'
         })).present();
         this.saved = true;
         this.#router.navigate(['/events']);

@@ -1,0 +1,71 @@
+<ion-header [translucent]="true">
+  <ion-toolbar color="primary">
+    <ion-title>New Event</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <form #eventForm="ngForm" (ngSubmit)="addEvent()">
+    <ion-list>
+      <ion-item>
+        <ion-input name="title" label="Title" labelPlacement="floating" required minlength="5"
+          pattern="^[a-zA-Z][a-zA-Z ]*$" [(ngModel)]="event.title" #titleModel="ngModel"></ion-input>
+        @if (titleModel.dirty && titleModel.valid) {
+        <ion-icon name="checkmark-circle" slot="end" color="success"></ion-icon>
+        }
+      </ion-item>
+
+      <ion-item>
+        <ion-input type="date" name="date" label="Date" labelPlacement="floating" required [(ngModel)]="event.date"
+          #dateModel="ngModel"></ion-input>
+        @if (dateModel.dirty && dateModel.valid) {
+        <ion-icon name="checkmark-circle" slot="end" color="success"></ion-icon>
+        }
+      </ion-item>
+
+      <ion-item>
+        <ion-textarea name="description" label="Description" labelPlacement="floating" required
+          [(ngModel)]="event.description" #descModel="ngModel"></ion-textarea>
+        @if (descModel.dirty && descModel.valid) {
+        <ion-icon name="checkmark-circle" slot="end" color="success"></ion-icon>
+        }
+      </ion-item>
+
+      <ion-item>
+        <ion-input type="number" name="price" label="Price (€)" labelPlacement="floating" required min="0.01"
+          step="0.01" [(ngModel)]="event.price" #priceModel="ngModel"></ion-input>
+        @if (priceModel.dirty && priceModel.valid) {
+        <ion-icon name="checkmark-circle" slot="end" color="success"></ion-icon>
+        }
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="inset">Image</ion-label>
+        <ion-button color="tertiary" (click)="pickFromGallery()">
+          <ion-icon name="images" slot="start"></ion-icon>
+          Gallery
+        </ion-button>
+      </ion-item>
+    </ion-list>
+
+    @if (event.image) {
+    <ion-img [src]="event.image" class="ion-padding"></ion-img>
+    }
+
+    <ion-grid>
+      <ion-row>
+        <ion-col>
+          <ion-button type="submit" color="primary" expand="block" [disabled]="eventForm.invalid">
+            <ion-icon name="document-text" slot="start"></ion-icon>Create Event
+          </ion-button>
+        </ion-col>
+        <ion-col>
+          <ion-button color="danger" expand="block" fill="outline" [routerLink]="['/events']">
+            <ion-icon name="arrow-undo-circle" slot="start"></ion-icon>
+            Cancel
+          </ion-button>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </form>
+</ion-content>

@@ -97,17 +97,10 @@ export class HomePage {
     const target = event.target as HTMLIonSearchbarElement;
     const query = target.value?.toLowerCase() || '';
 
-    if (query === '') {
-      this.loadEvents();
-    } else {
-      this.events.update((currentEvents) =>
-        currentEvents.filter(
-          (d) =>
-            d.title.toLowerCase().includes(query) ||
-            d.description.toLowerCase().includes(query)
-        )
-      );
-    }
+    this.search.set(query);  // Update search term
+    this.page.set(1);  // Reset page to 1 when searching
+    this.loadEvents(); // Reload events with the new search query
+
     this.#changeDetectorRef.markForCheck();
   }
 
@@ -128,7 +121,7 @@ export class HomePage {
   onIonInfinite(event: Event) {
     const infiniteScroll = event.target as HTMLIonInfiniteScrollElement;
     const currentPage = this.page();
-    this.#eventsService.getEvents(currentPage, this.searchDebounced(), this.orderBy()).subscribe((newEvents) => {
+    this.#eventsService.getEvents(currentPage, this.search(), this.orderBy()).subscribe((newEvents) => {
 
       if (newEvents.length === 0) {
         infiniteScroll.disabled = true;

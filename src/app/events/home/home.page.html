@@ -35,4 +35,9 @@
   @for(event of filteredEvents(); track event.id) {
   <app-event-card [event]="event" (deleted)="deleteEvent(event)" />
   }
+
+  <ion-infinite-scroll threshold="100px" (ionInfinite)="onIonInfinite($event)">
+    <ion-infinite-scroll-content loadingSpinner="bubbles" loadingText="Loading more events...">
+    </ion-infinite-scroll-content>
+  </ion-infinite-scroll>
 </ion-content>

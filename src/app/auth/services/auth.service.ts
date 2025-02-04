@@ -4,6 +4,7 @@ import { Preferences } from '@capacitor/preferences';
 import { Observable, catchError, from, map, of, switchMap } from 'rxjs';
 import { User } from '../../shared/interfaces/user';
 import { TokenResponse, UserResponse } from '../../shared/interfaces/responses';
+import { SingleUserResponse } from 'src/app/shared/interfaces/userResponses';
 
 @Injectable({
   providedIn: 'root'
@@ -75,9 +76,9 @@ export class AuthService {
   }
 
 
-  getProfile(): Observable<User> {
+  getProfile(id?: number): Observable<User> {
     return this.#http
-      .get<UserResponse>('auth/profile')
-      .pipe(map((r) => r.user));
+      .get<SingleUserResponse>(id ? `users/${id}` : "users/me")
+      .pipe(map((resp: SingleUserResponse) => resp.user));
   }
 }

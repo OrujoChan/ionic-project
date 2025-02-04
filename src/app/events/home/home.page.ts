@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import {
   IonContent,
   IonHeader, IonTitle, IonToolbar, IonRefresher, IonRefresherContent, IonCard,
-  IonButton, IonCol, IonGrid, IonRow, IonSearchbar
+  IonButton, IonCol, IonGrid, IonRow, IonSearchbar, IonInfiniteScroll, IonInfiniteScrollContent
 } from '@ionic/angular/standalone';
 import { EventsService } from '../services/events.service';
 import { MyEvent } from 'src/app/shared/interfaces/my-event';
@@ -22,7 +22,7 @@ import { EventCardComponent } from '../event-card/event-card.component';
   standalone: true,
   imports: [IonSearchbar, IonCol, IonButton, IonContent, IonHeader, IonTitle,
     IonToolbar, CommonModule, FormsModule, IonRefresher, IonRefresherContent,
-    IonGrid, IonRow, EventCardComponent]
+    IonGrid, IonRow, EventCardComponent, IonInfiniteScroll, IonInfiniteScrollContent]
 })
 export class HomePage {
 
@@ -124,6 +124,30 @@ export class HomePage {
     this.events.update((events) => events.filter((e) => e !== event));
 
   }
+  // Lots of duplicating issues again, this is the only thing that seems to work.
+  onIonInfinite(event: Event) {
+    const infiniteScroll = event.target as HTMLIonInfiniteScrollElement;
+    const currentPage = this.page();
+    this.#eventsService.getEvents(currentPage, this.searchDebounced(), this.orderBy()).subscribe((newEvents) => {
+
+      if (newEvents.length === 0) {
+        infiniteScroll.disabled = true;
+      } else {
+        this.events.update((current) => {
+          const existingEventIds = new Set(current.map(event => event.id));
+
+          const uniqueNewEvents = newEvents.filter(event => !existingEventIds.has(event.id));
+
+          return [...current, ...uniqueNewEvents];
+        });
+
+        this.page.update((currentPage) => currentPage + 1);
+      }
+
+      infiniteScroll.complete();
+    });
+  }
+
 
 
 

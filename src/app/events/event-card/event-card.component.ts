@@ -86,16 +86,16 @@ export class EventCardComponent {
     });
   }
 
-  // The following function is necesary, as the url of the server is https and
-  // the url of the image is http, the browser detects it as malicious and wouldnt load it (or something like that)
-  getImageUrl(image: string | undefined): string {
-    if (image) {
-      if (image.startsWith('http://')) {
-        return 'https://' + image.slice(7); // Change to https://
-      }
-      return image;
-    }
-    return 'assets/images/default-avatar.jpg';
-  }
+  // // The following function is necesary, as the url of the server is https and
+  // // the url of the image is http, the browser detects it as malicious and wouldnt load it (or something like that)
+  // getImageUrl(image: string | undefined): string {
+  //   if (image) {
+  //     if (image.startsWith('http://')) {
+  //       return 'https://' + image.slice(7); // Change to https://
+  //     }
+  //     return image;
+  //   }
+  //   return 'assets/images/default-avatar.jpg';
+  // }
 
 }

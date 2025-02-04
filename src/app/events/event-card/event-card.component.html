@@ -1,6 +1,6 @@
 <ion-card>
   <a [routerLink]="['/events', event().id]">
-    <ion-img [src]="getImageUrl(event().image) || 'assets/images/placeholder.jpg'" alt="Event Image"></ion-img>
+    <ion-img [src]="event().image || 'assets/images/placeholder.jpg'" alt="Event Image"></ion-img>
   </a>
 
   <ion-card-header>
@@ -15,7 +15,7 @@
 
     <div class="event-info">
       <ion-avatar>
-        <img [src]="getImageUrl(event().creator?.avatar) || 'assets/images/default-avatar.jpg'" alt="Creator Avatar" />
+        <img [src]="event().creator?.avatar || 'assets/images/default-avatar.jpg'" alt="Creator Avatar" />
       </ion-avatar>
       <span>{{ event().creator?.name }}</span>
     </div>

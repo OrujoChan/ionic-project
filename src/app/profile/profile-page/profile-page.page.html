@@ -5,19 +5,12 @@
 </ion-header>
 
 <ion-content class="ion-padding">
-  @if (user()) {
   <div class="ion-text-center">
     <ion-avatar>
       <img [src]="avatar()" alt="Profile Picture">
     </ion-avatar>
-    <ion-button color="danger" expand="block">
-      <ion-icon name="image"></ion-icon>
-      Change Avatar
-      <input type="file" hidden (change)="changeAvatar($event)" />
-    </ion-button>
   </div>
 
-  @if (showInfo()) {
   <ion-list>
     <ion-item>
       <ion-label>Name</ion-label>
@@ -29,6 +22,14 @@
     </ion-item>
   </ion-list>
 
+  @if (user()?.me) {
+  <ion-button color="danger" expand="block">
+    <ion-icon name="image"></ion-icon>
+    Change Avatar
+    <input type="file" hidden (change)="changeAvatar($event)" />
+  </ion-button>
+
+  @if (showInfo()) {
   <ion-button expand="block" color="primary" (click)="editProfile()">Edit Profile</ion-button>
   <ion-button expand="block" color="success" (click)="editPassword()">Edit Password</ion-button>
   }
@@ -55,6 +56,37 @@
     </ion-item>
 
     <ion-button type="submit" expand="block">Save Changes</ion-button>
+    <ion-button color="danger" expand="block" (click)="cancelEdit()">Cancel</ion-button>
+  </form>
+  }
+
+  @if (PasswordForm()) {
+  <form (ngSubmit)="changePassword()">
+    <ion-item>
+      <ion-input [(ngModel)]="password" name="password" label="New Password" type="password" required minlength="4"
+        #passwordModel="ngModel"></ion-input>
+      @if (passwordModel.dirty && passwordModel.valid) {
+      <ion-icon name="checkmark-circle" slot="end" color="success"></ion-icon>
+      }
+      @if (passwordModel.invalid && passwordModel.dirty) {
+      <ion-note color="danger">Must be at least 4 characters</ion-note>
+      }
+    </ion-item>
+
+    <ion-item>
+      <ion-input [(ngModel)]="password2" name="password2" label="Confirm Password" type="password" required
+        #password2Model="ngModel"></ion-input>
+      @if (password2Model.dirty && password2Model.valid && password2Validation()) {
+      <ion-icon name="checkmark-circle" slot="end" color="success"></ion-icon>
+      }
+      @if (password2Model.dirty && !password2Validation()) {
+      <ion-note color="danger">Passwords do not match</ion-note>
+      }
+    </ion-item>
+
+    <ion-button type="submit" expand="block" [disabled]="!(password2Validation() && password().length >= 4)">
+      Save Changes
+    </ion-button>
     <ion-button color="danger" expand="block" (click)="cancelEdit()">Cancel</ion-button>
   </form>
   }

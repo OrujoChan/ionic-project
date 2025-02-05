@@ -1,17 +1,17 @@
-import { Component, inject, signal, effect } from '@angular/core';
+import { Component, inject, signal, effect, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { IonContent, IonHeader, IonTitle, IonToolbar, IonButton, IonInput, IonItem, IonLabel, IonNote, IonAvatar, IonIcon, IonList, IonText } from '@ionic/angular/standalone';
+import { IonContent, IonHeader, IonTitle, IonToolbar, IonButton, IonInput, IonItem, IonLabel, IonNote, IonAvatar, IonIcon, IonList, IonText, IonCard, IonCardContent } from '@ionic/angular/standalone';
 import { User } from 'src/app/shared/interfaces/user';
 import { ProfileService } from '../services/profile.service';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-profile-page',
   templateUrl: './profile-page.page.html',
   styleUrls: ['./profile-page.page.scss'],
   standalone: true,
-  imports: [
-    IonText, IonList, IonIcon, IonContent, IonHeader, IonTitle, IonToolbar, CommonModule, FormsModule,
+  imports: [IonText, IonList, IonIcon, IonContent, IonHeader, IonTitle, IonToolbar, CommonModule, FormsModule,
     IonButton, IonInput, IonItem, IonLabel, IonNote, IonAvatar
   ]
 })
@@ -21,17 +21,22 @@ export class ProfilePagePage {
   showInfo = signal(true);
   ProfileForm = signal(false);
   PasswordForm = signal(false);
+  #route = inject(ActivatedRoute);
 
   email = signal('');
   name = signal('');
   avatar = signal('');
+  password = signal('');
+  password2 = signal('');
+
 
   constructor() {
-    this.loadUser();
+    const id = Number(this.#route.snapshot.paramMap.get('id')) || undefined; // ✅ Get the ID from the route
+    this.loadUser(id);
   }
 
-  loadUser() {
-    this.#profileService.getUser().subscribe((userData) => {
+  loadUser(id?: number) {
+    this.#profileService.getUser(id).subscribe((userData) => {
       this.user.set(userData);
       this.email.set(userData.email);
       this.name.set(userData.name);
@@ -78,5 +83,17 @@ export class ProfilePagePage {
       };
       reader.readAsDataURL(file);
     }
+  }
+
+  password2Validation = computed(() => this.password() === this.password2());
+
+  changePassword() {
+    if (this.password() !== this.password2()) {
+      return;
+    }
+
+    this.#profileService.updatePassword({ password: this.password() }).subscribe(() => {
+      this.cancelEdit();
+    });
   }
 }

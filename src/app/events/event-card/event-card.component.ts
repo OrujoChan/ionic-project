@@ -18,7 +18,6 @@ import { EventsService } from '../services/events.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import Swal from 'sweetalert2';
 import { IntlCurrencyPipe } from "../../shared/pipes/intl-currency.pipe";
-import { User } from 'src/app/shared/interfaces/user';
 @Component({
   selector: 'app-event-card',
   imports: [
@@ -44,34 +43,11 @@ export class EventCardComponent {
   event = input.required<MyEvent>();
   #eventsService = inject(EventsService);
   #destroyRef = inject(DestroyRef);
-  attend = signal<User[]>([]);
+
   deleted = output<void>();
   #changeDetectorRef = inject(ChangeDetectorRef);
 
-  setAttend(id: number) {
-    this.#eventsService.getAttendees(id).pipe().subscribe((result) => {
-      this.attend.set(result.users);
-    });
-  }
 
-  toggleAttend() {
-    const event = this.event();
-    if (!event) return;
-
-    const isAttending = event.attend;
-    const service = isAttending
-      ? this.#eventsService.deleteAttend(event.id)
-      : this.#eventsService.postAttend(event.id);
-
-    service.pipe(takeUntilDestroyed(this.#destroyRef)).subscribe(() => {
-      event.numAttend += isAttending ? -1 : 1;
-      event.attend = !isAttending;
-
-      this.setAttend(event.id);
-
-      this.#changeDetectorRef.markForCheck();
-    });
-  }
 
   deleteEvent() {
     Swal.fire({

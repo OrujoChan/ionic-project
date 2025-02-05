@@ -15,10 +15,16 @@
       <ion-icon name="information-circle"></ion-icon>
       <ion-label>Info</ion-label>
     </ion-tab-button>
+    <!-- If i didnt add this extra if statement i got an undefined attend error -->
+    @if(event()) {
+    @if(event()!.attend) {
     <ion-tab-button tab="comments">
       <ion-icon name="chatbox-ellipses"></ion-icon>
       <ion-label>Comments</ion-label>
     </ion-tab-button>
+    }
+    }
+
     <ion-tab-button tab="location">
       <ion-icon name="navigate-circle-outline"></ion-icon>
       <ion-label>Location</ion-label>

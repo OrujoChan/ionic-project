@@ -8,6 +8,7 @@ import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { baseUrlInterceptor } from './app/shared/interceptors/base-url.interceptor';
 import { authInterceptor } from './app/shared/interceptors/auth.interceptor';
 import { defineCustomElements } from '@ionic/pwa-elements/loader';
+import { provideFacebookId } from './app/auth/fb-login/fb-login.config';
 
 
 defineCustomElements(window);
@@ -19,5 +20,6 @@ bootstrapApplication(AppComponent, {
     provideIonicAngular(),
     provideHttpClient(withInterceptors([baseUrlInterceptor, authInterceptor])),
     provideRouter(routes, withPreloading(PreloadAllModules), withComponentInputBinding()),
+    provideFacebookId('639376935328081', 'v21.0')
   ],
 });

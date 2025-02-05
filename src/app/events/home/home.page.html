@@ -10,6 +10,12 @@
     </ion-refresher-content>
   </ion-refresher>
 
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button color="secondary" [routerLink]="['/events/new']" [routerDirection]="'root'">
+      <ion-icon name="add"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+
   <div class="search-sort-container ion-padding">
     <ion-grid>
       <ion-row>

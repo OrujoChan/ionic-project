@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import {
   IonContent,
-  IonHeader, IonTitle, IonToolbar, IonRefresher, IonRefresherContent, IonCard,
+  IonHeader, IonTitle, IonToolbar, IonRefresher, IonRefresherContent, IonFab, IonFabButton, IonIcon,
   IonButton, IonCol, IonGrid, IonRow, IonSearchbar, IonInfiniteScroll, IonInfiniteScrollContent
 } from '@ionic/angular/standalone';
 import { EventsService } from '../services/events.service';
@@ -11,7 +11,7 @@ import { MyEvent } from 'src/app/shared/interfaces/my-event';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { debounceTime, Subject } from 'rxjs';
 import { EventCardComponent } from '../event-card/event-card.component';
-
+import { RouterLink } from '@angular/router';
 
 
 
@@ -22,7 +22,8 @@ import { EventCardComponent } from '../event-card/event-card.component';
   standalone: true,
   imports: [IonSearchbar, IonCol, IonButton, IonContent, IonHeader, IonTitle,
     IonToolbar, CommonModule, FormsModule, IonRefresher, IonRefresherContent,
-    IonGrid, IonRow, EventCardComponent, IonInfiniteScroll, IonInfiniteScrollContent]
+    IonGrid, IonRow, EventCardComponent, IonInfiniteScroll, IonInfiniteScrollContent,
+    IonFab, IonFabButton, IonIcon, RouterLink]
 })
 export class HomePage {
 

@@ -52,6 +52,13 @@
     <ion-img [src]="event.image" class="ion-padding"></ion-img>
     }
 
+    @if(coords()) {
+    <ol-map [coordinates]="coords()">
+      <ga-autocomplete (locationChange)="changePlace($event)"></ga-autocomplete>
+      <ol-marker [coordinates]="coords()"></ol-marker>
+    </ol-map>
+    }
+
     <ion-grid>
       <ion-row>
         <ion-col>
@@ -68,9 +75,3 @@
       </ion-row>
     </ion-grid>
   </form>
-  @if(coords()) {
-  <ol-map [coordinates]="coords()">
-    <ga-autocomplete (locationChange)="changePlace($event)"></ga-autocomplete>
-    <ol-marker [coordinates]="coords()"></ol-marker>
-  </ol-map>
-  }

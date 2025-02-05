@@ -28,3 +28,9 @@ export interface changeProfile {
 export interface changeAvatar {
     avatar: string;
 }
+
+export interface FacebookLogin {
+    token?: string;
+    lat?: number;
+    lng?: number;
+}

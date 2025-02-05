@@ -23,11 +23,15 @@
   </ion-list>
 
   @if (user()?.me) {
-  <ion-button color="danger" expand="block">
-    <ion-icon name="image"></ion-icon>
-    Change Avatar
-    <input type="file" hidden (change)="changeAvatar($event)" />
-  </ion-button>
+  <ion-item lines="none">
+    <label for="fileInput" class="custom-upload-button">
+      <ion-button color="danger" expand="block">
+        <ion-icon name="image"></ion-icon>
+        Change Avatar
+      </ion-button>
+    </label>
+    <input id="fileInput" type="file" (change)="changeAvatar($event)" hidden />
+  </ion-item>
 
   @if (showInfo()) {
   <ion-button expand="block" color="primary" (click)="editProfile()">Edit Profile</ion-button>
@@ -91,4 +95,7 @@
   </form>
   }
   }
+  <ol-map [coordinates]="coords()">
+    <ol-marker [coordinates]="coords()"></ol-marker>
+  </ol-map>
 </ion-content>

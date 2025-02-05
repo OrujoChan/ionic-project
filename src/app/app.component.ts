@@ -3,7 +3,7 @@ import { Component, effect, inject, signal } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { IonImg, IonApp, IonSplitPane, NavController, IonMenu, IonContent, IonList, IonMenuToggle, IonItem, IonIcon, IonLabel, IonRouterOutlet, IonRouterLink, IonAvatar } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
-import { mailSharp, paperPlaneOutline, paperPlaneSharp, heartOutline, heartSharp, archiveOutline, archiveSharp, trashOutline, trashSharp, warningOutline, warningSharp, bookmarkOutline, bookmarkSharp, arrowUndoCircle, camera, checkmarkCircle, logIn, documentText, images, thumbsDown, thumbsUp, closeCircle, chatboxEllipses, informationCircle, navigateCircleOutline, navigateOutline, exit, image } from 'ionicons/icons';
+import { mailSharp, paperPlaneOutline, paperPlaneSharp, heartOutline, heartSharp, archiveOutline, archiveSharp, trashOutline, trashSharp, warningOutline, warningSharp, bookmarkOutline, bookmarkSharp, arrowUndoCircle, camera, checkmarkCircle, logIn, documentText, images, thumbsDown, thumbsUp, closeCircle, chatboxEllipses, informationCircle, navigateCircleOutline, navigateOutline, exit, image, add } from 'ionicons/icons';
 import { User } from './shared/interfaces/user';
 import { AuthService } from './auth/services/auth.service';
 
@@ -31,7 +31,7 @@ export class AppComponent {
     addIcons({
       arrowUndoCircle, camera, checkmarkCircle, mailSharp, logIn, documentText, paperPlaneSharp,
       images, thumbsDown, exit, thumbsUp, closeCircle, chatboxEllipses, informationCircle,
-      navigateCircleOutline, navigateOutline, trashOutline, image
+      navigateCircleOutline, navigateOutline, trashOutline, image, add
     });
     effect(() => {
       if (this.#authService.isLogged()) {
@@ -46,5 +46,6 @@ export class AppComponent {
   async logout() {
     await this.#authService.logout();
     this.#nav.navigateRoot(['/auth/login']);
+    window.location.reload();
   }
 }

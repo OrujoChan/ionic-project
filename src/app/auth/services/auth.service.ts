@@ -2,10 +2,10 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable, inject, signal } from '@angular/core';
 import { Preferences } from '@capacitor/preferences';
 import { Observable, catchError, from, map, of, switchMap } from 'rxjs';
-import { User } from '../../shared/interfaces/user';
+import { FacebookLogin, User } from '../../shared/interfaces/user';
 import { TokenResponse, UserResponse } from '../../shared/interfaces/responses';
 import { SingleUserResponse } from 'src/app/shared/interfaces/userResponses';
-
+import { CookieService } from "ngx-cookie-service";
 @Injectable({
   providedIn: 'root'
 })
@@ -13,7 +13,7 @@ export class AuthService {
   #logged = signal(false);
 
   #http = inject(HttpClient)
-
+  cookieService = inject(CookieService);
 
 
   login(
@@ -80,5 +80,21 @@ export class AuthService {
     return this.#http
       .get<SingleUserResponse>(id ? `users/${id}` : "users/me")
       .pipe(map((resp: SingleUserResponse) => resp.user));
+  }
+
+  facebookLogin(facebookLogin: FacebookLogin): Observable<void> {
+    const loginUrl = `auth/facebook/`;
+
+    return this.#http.post<TokenResponse>(loginUrl, facebookLogin).pipe(
+      map((resp) => {
+        console.log(resp.accessToken);
+        this.cookieService.set('token', resp.accessToken);
+        this.#logged.set(true);
+      }),
+      catchError((error) => {
+        console.error('Error en el login de Facebook:', error);
+        return of();
+      })
+    );
   }
 }

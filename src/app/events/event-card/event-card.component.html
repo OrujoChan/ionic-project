@@ -15,7 +15,8 @@
 
     <div class="event-info">
       <ion-avatar>
-        <img [src]="event().creator?.avatar || 'assets/images/default-avatar.jpg'" alt="Creator Avatar" />
+        <a href="/profile/{{event().creator?.id}}"><img
+            [src]="event().creator?.avatar || 'assets/images/default-avatar.jpg'" alt="Creator Avatar" /></a>
       </ion-avatar>
       <span>{{ event().creator?.name }}</span>
     </div>
@@ -28,11 +29,6 @@
     <div class="event-attendance">
       <ion-button fill="clear" color="danger" *ngIf="event().mine" (click)="deleteEvent()">
         <ion-icon name="trash-outline"></ion-icon>
-      </ion-button>
-
-      <ion-button fill="clear" (click)="toggleAttend()">
-        <ion-icon [name]="event().attend ? 'thumbs-up' : 'thumbs-down'"></ion-icon>
-        {{ event().attend ? "I'm going" : "Not going" }}
       </ion-button>
     </div>
   </ion-card-content>

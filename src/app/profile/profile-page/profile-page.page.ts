@@ -5,6 +5,8 @@ import { IonContent, IonHeader, IonTitle, IonToolbar, IonButton, IonInput, IonIt
 import { User } from 'src/app/shared/interfaces/user';
 import { ProfileService } from '../services/profile.service';
 import { ActivatedRoute } from '@angular/router';
+import { OlMapDirective } from 'src/app/shared/directives/ol-maps/ol-map.directive';
+import { OlMarkerDirective } from 'src/app/shared/directives/ol-maps/ol-marker.directive';
 
 @Component({
   selector: 'app-profile-page',
@@ -12,7 +14,7 @@ import { ActivatedRoute } from '@angular/router';
   styleUrls: ['./profile-page.page.scss'],
   standalone: true,
   imports: [IonText, IonList, IonIcon, IonContent, IonHeader, IonTitle, IonToolbar, CommonModule, FormsModule,
-    IonButton, IonInput, IonItem, IonLabel, IonNote, IonAvatar
+    IonButton, IonInput, IonItem, IonLabel, IonNote, IonAvatar, OlMapDirective, OlMarkerDirective
   ]
 })
 export class ProfilePagePage {
@@ -22,7 +24,7 @@ export class ProfilePagePage {
   ProfileForm = signal(false);
   PasswordForm = signal(false);
   #route = inject(ActivatedRoute);
-
+  coords = signal<[number, number]>([-0.5, 38.5]);
   email = signal('');
   name = signal('');
   avatar = signal('');
@@ -33,6 +35,7 @@ export class ProfilePagePage {
   constructor() {
     const id = Number(this.#route.snapshot.paramMap.get('id')) || undefined; // ✅ Get the ID from the route
     this.loadUser(id);
+
   }
 
   loadUser(id?: number) {
@@ -41,6 +44,7 @@ export class ProfilePagePage {
       this.email.set(userData.email);
       this.name.set(userData.name);
       this.avatar.set(userData.avatar);
+      this.coords.set([userData.lng, userData.lat]);
     });
   }
 

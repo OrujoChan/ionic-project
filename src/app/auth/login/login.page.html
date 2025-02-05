@@ -31,6 +31,18 @@
           </ion-button>
         </ion-col>
       </ion-row>
+      <ion-row>
+        <ion-col>
+          <div>
+            <ion-button fbLogin [scopes]="['email', 'public_profile']" color="tertiary" expand="block"
+              (loginOk)="loggedFacebook($event)" (loginError)="showError($event)">
+              <fa-icon [icon]="fbIcon"></fa-icon>
+              FBLogin NOT WORKING
+            </ion-button>
+          </div>
+        </ion-col>
+      </ion-row>
+
     </ion-grid>
   </form>
 </ion-content>

@@ -12,12 +12,13 @@ import { FacebookLogin } from 'src/app/shared/interfaces/user';
 import { FaIconComponent } from '@fortawesome/angular-fontawesome';
 import { FbLoginDirective } from '../fb-login/fb-login.directive';
 import { faFacebook } from '@fortawesome/free-brands-svg-icons';
+import { GoogleLoginPage } from '../google-login/google-login.page';
 @Component({
   selector: 'app-login',
   templateUrl: './login.page.html',
   styleUrls: ['./login.page.scss'],
   standalone: true,
-  imports: [FormsModule, FbLoginDirective, FaIconComponent, RouterLink, IonRouterLink, IonHeader, IonToolbar, IonTitle, IonContent, IonList, IonItem, IonInput, IonGrid, IonRow, IonCol, IonButton, IonIcon]
+  imports: [FormsModule, FbLoginDirective, FaIconComponent, RouterLink, IonRouterLink, IonHeader, IonToolbar, IonTitle, IonContent, IonList, IonItem, IonInput, IonGrid, IonRow, IonCol, IonButton, IonIcon, GoogleLoginPage]
 })
 export class LoginPage {
   email = '';
